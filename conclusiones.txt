@@ -1,0 +1,254 @@
+==============================================================================
+CONCLUSIONES Y HALLAZGOS
+Prueba Funcional E2E - Demoblaze / Serenity BDD + Screenplay Pattern
+==============================================================================
+
+1. HALLAZGOS DEL FLUJO DE COMPRA
+---------------------------------
+
+1.1. Flujo General
+El flujo de compra de Demoblaze es funcional y reproducible en condiciones
+normales de red. La secuencia: catálogo → producto → Add to cart → carrito →
+Place Order → formulario → Purchase → confirmación, opera correctamente
+cuando se manejan adecuadamente los tiempos de carga de cada sección.
+
+1.2. Carga Asíncrona del Catálogo
+El catálogo de productos se carga dinámicamente vía API REST interna. En
+consecuencia, los productos no están presentes en el DOM inmediatamente tras
+la carga de la página. Fue necesario implementar esperas explícitas
+(WaitUntil de Serenity Screenplay) sobre el elemento del producto antes de
+hacer clic, con un timeout de 15 segundos para absorber variaciones de red.
+
+1.3. Persistencia del Carrito en localStorage
+Demoblaze almacena el carrito en localStorage del navegador en lugar de
+sesiones de servidor. Este comportamiento tiene dos implicaciones importantes:
+  a) Si se reutiliza el perfil del browser entre ejecuciones, productos de
+     pruebas anteriores permanecen en el carrito. Esto puede causar falsos
+     positivos si la validación del carrito no es lo suficientemente estricta.
+  b) En modo headless con Chrome fresco por ejecución, este problema no ocurre.
+     Se recomienda siempre ejecutar con mvn clean verify para un estado limpio.
+
+==============================================================================
+
+2. COMPORTAMIENTO DE DEMOBLAZE
+--------------------------------
+
+2.1. Estabilidad General
+Demoblaze es un sitio de demostración con disponibilidad variable. Se han
+observado intermitencias en la carga del catálogo y del carrito, especialmente
+bajo carga de múltiples usuarios simultáneos. Las pruebas son estables en
+condiciones normales de red individual.
+
+2.2. Ausencia de Autenticación
+El flujo de compra no requiere registro ni login, lo que simplifica el E2E
+pero lo hace susceptible a interferencias de sesiones compartidas entre
+distintos usuarios de la demo.
+
+2.3. Variabilidad del Catálogo
+El catálogo de productos puede cambiar entre sesiones. Los nombres de los
+productos son sensibles a mayúsculas/minúsculas en los localizadores XPath.
+Se usó normalize-space() para mayor robustez, pero si Demoblaze modifica el
+nombre de un producto (ej. de "Samsung galaxy s6" a "Samsung Galaxy S6"),
+el test fallará. Se recomienda revisar el catálogo antes de cada ejecución
+y actualizar purchase-data.properties si es necesario.
+
+==============================================================================
+
+3. MANEJO DE ALERTS
+--------------------
+
+3.1. Alert "Product added"
+Demoblaze dispara un alert nativo del navegador (window.alert) al agregar un
+producto al carrito. Este alert debe aceptarse antes de continuar con cualquier
+acción posterior.
+
+3.2. Estrategia Implementada
+Se implementó la clase AcceptAlert como Interaction de Screenplay, que usa
+WebDriverWait con ExpectedConditions.alertIsPresent() con un timeout de 10
+segundos. Esta estrategia es robusta y no depende de Thread.sleep().
+
+3.3. Hallazgo: Timing del Alert
+En algunos entornos o bajo carga de red, el alert puede aparecer con demora
+de 2-4 segundos tras hacer clic en "Add to cart". El timeout de 10 segundos
+es suficiente en la práctica, pero puede ajustarse en AcceptAlert.java si se
+trabaja en entornos de red muy lentos o VPNs corporativas.
+
+==============================================================================
+
+4. MANEJO DE MODALES
+---------------------
+
+4.1. Modal "Place Order"
+El formulario de compra se presenta como un modal Bootstrap (div con id
+"orderModal"). Abre correctamente al hacer clic en "Place Order" y los
+campos de texto son accesibles directamente por ID (name, country, city,
+card, month, year). No presenta problemas de interacción.
+
+4.2. Modal de Confirmación (SweetAlert)
+La confirmación de compra usa la librería SweetAlert. El elemento principal
+tiene la clase CSS ".sweet-alert". El título con el mensaje
+"Thank you for your purchase!" es estable y validable.
+
+4.3. Detalle de la Confirmación
+El modal incluye texto adicional con el ID de la transacción, el importe y
+la tarjeta. Este texto es dinámico y no se valida de forma exacta, sino que
+se verifica la presencia del mensaje principal de éxito.
+
+==============================================================================
+
+5. VALIDACIONES DEL CARRITO
+-----------------------------
+
+5.1. Estrategia de Validación
+La validación del carrito se implementa mediante la Question ProductsInCart,
+que lee las filas de la tabla #tbodyid y extrae el texto de la segunda columna
+(nombre del producto). Se verifica que cada producto esperado esté contenido
+en la lista resultante, usando comparación case-insensitive.
+
+5.2. Limitación: Tiempo de Carga del Carrito
+Los productos en el carrito también se cargan de forma asíncrona. Se observó
+que en ocasiones la tabla aparece vacía por un instante antes de poblar los
+datos. La solución implementada (GoToCart) espera explícitamente a que existan
+celdas en la tabla (#tbodyid tr td) mediante WebDriverWait, ya que el botón
+"Place Order" aparece aunque el carrito esté vacío y no es una señal confiable
+de carga completa. Esta estrategia demostró ser robusta y estable.
+
+5.3. Limitación: Duplicados en el Carrito
+Si un mismo producto se agrega dos veces (por reejecutar el test sin limpiar
+el localStorage), aparecerá duplicado en el carrito. Las validaciones actuales
+no verifican la cantidad, solo la presencia. Este comportamiento está
+documentado y se considera fuera del alcance del reto.
+
+==============================================================================
+
+6. VALIDACIÓN DE CONFIRMACIÓN DE COMPRA
+-----------------------------------------
+
+6.1. Mensaje de Éxito
+El texto "Thank you for your purchase!" aparece de forma consistente como
+título del modal SweetAlert tras una compra exitosa. La validación usa
+containsString() en lugar de equals() para mayor tolerancia a variaciones
+de formato.
+
+6.2. Datos de la Confirmación
+El modal incluye adicionalmente: Id, Amount, Card Number y Name. Estos datos
+son dinámicos (el Id varía por transacción). Se implementó la Question
+PurchaseConfirmationMessage para leer este texto, pero la validación principal
+se enfoca en el mensaje de éxito, no en los valores dinámicos.
+
+==============================================================================
+
+7. CASO NEGATIVO: FORMULARIO INCOMPLETO
+-----------------------------------------
+
+7.1. Comportamiento Observado
+Al intentar hacer clic en "Purchase" sin llenar los campos del formulario,
+Demoblaze muestra un alert nativo del navegador con el texto "Please fill out
+Name and Creditcard." Este comportamiento fue observado de forma consistente.
+
+7.2. Automatización del Caso Negativo
+Se implementó el escenario negativo que captura y maneja este alert. Sin
+embargo, el comportamiento de Demoblaze en casos de formulario parcialmente
+completo (ej. nombre sí pero tarjeta no) no es consistente: en algunos casos
+procesa la compra de todas formas.
+
+7.3. Decisión de Diseño
+El caso negativo se incluyó en el proyecto pero se marcó con tag @negativo
+para poder excluirlo fácilmente. Se recomienda revisar su estabilidad en el
+entorno de evaluación antes de incluirlo en un pipeline de CI/CD.
+
+==============================================================================
+
+8. LIMITACIONES ENCONTRADAS
+-----------------------------
+
+8.1. Validación Superficial del Servidor
+Demoblaze no realiza validaciones robustas de datos en el servidor. Una compra
+puede completarse con datos de tarjeta inválidos o campos en blanco. Esto
+limita la cobertura de pruebas negativas significativas.
+
+8.2. Sin Verificación de Inventario
+La tienda no verifica stock real. Es posible agregar el mismo producto
+múltiples veces sin restricción.
+
+8.3. Dependencia de Red
+La velocidad de carga de Demoblaze varía según la ubicación geográfica y las
+condiciones de la red. Se recomienda ejecutar las pruebas con una conexión
+estable a internet.
+
+8.4. ChromeDriver y Versión de Chrome
+WebDriverManager resuelve automáticamente la compatibilidad. Si se ejecuta
+detrás de un proxy corporativo, puede requerir configuración adicional de
+WebDriverManager (wdm.proxyHost, wdm.proxyPort).
+
+8.5. Carousel de Productos
+En la página principal, el catálogo incluye un carousel de imágenes en la
+parte superior. Este no interfiere con las pruebas pero puede causar scroll
+inesperado en ciertos viewports. Se recomienda usar --window-size=1920,1080.
+
+==============================================================================
+
+9. POSIBLES MEJORAS FUTURAS
+-----------------------------
+
+9.1. Gestión de Estado del Carrito [IMPLEMENTADO]
+La limpieza del carrito vía JavaScript (localStorage.clear()) está implementada
+en el @Before hook (Hooks.java). Antes de cada escenario, el driver navega a
+Demoblaze y ejecuta window.localStorage.clear() para garantizar un estado limpio
+e independiente entre escenarios. Esta medida fue necesaria al detectar que el
+carrito persiste entre ejecuciones del mismo browser.
+
+9.2. Ejecución Paralela
+El proyecto puede extenderse para ejecución paralela con la configuración
+serenity.parallel.batches y la estrategia de ThreadLocal en Screenplay.
+
+9.3. Datos Dinámicos con Faker
+Integrar la librería JavaFaker para generar datos de compra dinámicos en cada
+ejecución, mejorando la independencia entre pruebas.
+
+9.4. Integración CI/CD
+Configurar GitHub Actions o Jenkins para ejecutar el proyecto con:
+  mvn clean verify (modo headless por defecto)
+Y publicar el reporte Serenity como artefacto del build.
+
+9.5. Parametrización Ampliada
+Expandir el Scenario Outline con múltiples combinaciones de productos y datos
+de compra para aumentar la cobertura de datos manteniendo la estabilidad.
+
+9.6. Validación del Correo de Confirmación
+Si Demoblaze enviara correo de confirmación real, se podría integrar con
+Mailosaur o similar para validación E2E completa incluyendo el canal de correo.
+
+9.7. Pruebas de Accesibilidad
+Integrar axe-core mediante el plugin de Serenity para validar accesibilidad
+básica (WCAG 2.1 AA) en el flujo de compra.
+
+==============================================================================
+
+10. CONCLUSIÓN GENERAL
+-----------------------
+
+El proyecto implementa exitosamente una suite de pruebas funcionales E2E para
+el flujo de compra de Demoblaze, aplicando las mejores prácticas actuales de
+automatización con Serenity BDD y el patrón Screenplay.
+
+La separación de responsabilidades es clara: Tasks para acciones, Questions
+para validaciones, UserInterfaces para selectores y StepDefinitions como
+orquestadores puros. Esto garantiza mantenibilidad, legibilidad y escalabilidad
+del código de pruebas.
+
+El manejo robusto de los elementos asíncronos de Demoblaze (carga de catálogo,
+alerts, modales SweetAlert) mediante esperas explícitas —en lugar de
+Thread.sleep()— hace que la suite sea estable y resistente a variaciones de
+rendimiento de la aplicación bajo prueba.
+
+Los datos externalizados en purchase-data.properties, la URL centralizada en
+serenity.conf y la generación automática del reporte Serenity (con screenshots
+por cada acción) hacen que el proyecto sea completamente autónomo y reproducible
+por cualquier evaluador con los prerrequisitos básicos instalados.
+
+==============================================================================
+Fecha de generación: Junio 2026
+Framework: Serenity BDD 4.2.9 + Cucumber 7 + Screenplay Pattern
+Entorno de prueba: https://www.demoblaze.com/
+==============================================================================
