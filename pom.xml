@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demoblaze</groupId>
+    <artifactId>demoblaze-serenity-e2e</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Demoblaze E2E Serenity BDD</name>
+    <description>Pruebas funcionales E2E de flujo de compra en Demoblaze usando Serenity BDD + Screenplay Pattern</description>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Serenity BDD -->
+        <serenity.version>4.2.9</serenity.version>
+
+        <!-- JUnit 5 -->
+        <junit.version>5.10.2</junit.version>
+        <junit.platform.version>1.10.2</junit.platform.version>
+
+        <!-- Cucumber -->
+        <cucumber.version>7.15.0</cucumber.version>
+
+        <!-- Configuración dinámica desde línea de comandos -->
+        <headless.mode>true</headless.mode>
+        <!-- Tag filter por defecto: ejecuta todo salvo @wip.
+             Para filtrar: mvn clean verify -Dcucumber.filter.tags="@smoke" -->
+        <cucumber.filter.tags>not @wip</cucumber.filter.tags>
+    </properties>
+
+    <dependencies>
+
+        <!-- ============================================================ -->
+        <!-- Serenity BDD Core + Screenplay + WebDriver                   -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-core</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-screenplay-webdriver</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-junit5</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================ -->
+        <!-- JUnit 5                                                       -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================ -->
+        <!-- Cucumber                                                      -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================ -->
+        <!-- AssertJ — aserciones fluidas                                  -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.25.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================ -->
+        <!-- Logback — logging limpio                                      -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Failsafe Plugin — ejecuta ITs y genera el reporte -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Runner.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <headless.mode>${headless.mode}</headless.mode>
+                    </systemPropertyVariables>
+                    <!-- configurationParameters pasa el filtro de tags al JUnit Platform engine.
+                         El valor viene de la property Maven cucumber.filter.tags (default: not @wip).
+                         Se puede sobrescribir desde línea de comandos:
+                           mvn clean verify -Dcucumber.filter.tags="@smoke"      → 1 test
+                           mvn clean verify -Dcucumber.filter.tags="@regression" → 3 tests
+                           mvn clean verify -Dcucumber.filter.tags="@negative"   → 1 test
+                           mvn clean verify -Dcucumber.filter.tags="@outline"    → 2 tests -->
+                    <configurationParameters>
+                        cucumber.filter.tags=${cucumber.filter.tags}
+                    </configurationParameters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Serenity Maven Plugin — genera el reporte HTML final -->
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.serenity-bdd</groupId>
+                        <artifactId>serenity-single-page-report</artifactId>
+                        <version>${serenity.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>serenity-reports</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
