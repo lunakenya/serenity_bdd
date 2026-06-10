@@ -58,7 +58,7 @@ Antes de ejecutar, asegúrese de tener instalado:
 INSTALACIÓN
 -----------
 1. Clone o descargue este repositorio:
-   git clone <url-del-repositorio>
+   git clone https://github.com/lunakenya/serenity_bdd.git
    cd demoblaze-serenity-e2e
 
 2. Descargue las dependencias Maven (solo la primera vez):
@@ -310,7 +310,7 @@ El primer mvn clean verify descargará aprox. 150-200 MB de dependencias.
 Las ejecuciones subsiguientes serán significativamente más rápidas.
 
 ==============================================================================
-Autor: QA Automation Engineer
+Autor: Kenya Luna
 Fecha: Junio 2026
 Framework: Serenity BDD 4.2.9 + Cucumber 7 + Screenplay Pattern
 ==============================================================================
