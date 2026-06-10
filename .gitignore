@@ -1,0 +1,53 @@
+# ============================================================
+# Git Ignore — Demoblaze Serenity BDD E2E Project
+# ============================================================
+
+# Directorio de build y resultados Maven/Serenity
+target/
+
+# IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.vscode/
+*.code-workspace
+
+# Logs
+*.log
+logs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Clases Java compiladas
+*.class
+
+# Archivos JAR/WAR generados localmente
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven wrapper (si no se incluye intencionalmente)
+# .mvn/
+
+# Serenity reportes locales (se regeneran con mvn clean verify)
+# Descomenta si no quieres versionar los reportes generados localmente
+# target/site/serenity/
+
+# ChromeDriver descargado localmente por WebDriverManager
+.wdm/
+driver/
+
+# Variables de entorno locales
+.env
+.env.local
