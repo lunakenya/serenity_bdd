@@ -2,7 +2,6 @@
 CONCLUSIONES Y HALLAZGOS
 Prueba Funcional E2E - Demoblaze / Serenity BDD + Screenplay Pattern
 ==============================================================================
-
 1. HALLAZGOS DEL FLUJO DE COMPRA
 ---------------------------------
 
@@ -29,7 +28,6 @@ sesiones de servidor. Este comportamiento tiene dos implicaciones importantes:
      Se recomienda siempre ejecutar con mvn clean verify para un estado limpio.
 
 ==============================================================================
-
 2. COMPORTAMIENTO DE DEMOBLAZE
 --------------------------------
 
@@ -53,7 +51,6 @@ el test fallará. Se recomienda revisar el catálogo antes de cada ejecución
 y actualizar purchase-data.properties si es necesario.
 
 ==============================================================================
-
 3. MANEJO DE ALERTS
 --------------------
 
@@ -74,7 +71,6 @@ es suficiente en la práctica, pero puede ajustarse en AcceptAlert.java si se
 trabaja en entornos de red muy lentos o VPNs corporativas.
 
 ==============================================================================
-
 4. MANEJO DE MODALES
 ---------------------
 
@@ -95,7 +91,6 @@ la tarjeta. Este texto es dinámico y no se valida de forma exacta, sino que
 se verifica la presencia del mensaje principal de éxito.
 
 ==============================================================================
-
 5. VALIDACIONES DEL CARRITO
 -----------------------------
 
@@ -120,7 +115,6 @@ no verifican la cantidad, solo la presencia. Este comportamiento está
 documentado y se considera fuera del alcance del reto.
 
 ==============================================================================
-
 6. VALIDACIÓN DE CONFIRMACIÓN DE COMPRA
 -----------------------------------------
 
@@ -137,7 +131,6 @@ PurchaseConfirmationMessage para leer este texto, pero la validación principal
 se enfoca en el mensaje de éxito, no en los valores dinámicos.
 
 ==============================================================================
-
 7. CASO NEGATIVO: FORMULARIO INCOMPLETO
 -----------------------------------------
 
@@ -158,7 +151,6 @@ para poder excluirlo fácilmente. Se recomienda revisar su estabilidad en el
 entorno de evaluación antes de incluirlo en un pipeline de CI/CD.
 
 ==============================================================================
-
 8. LIMITACIONES ENCONTRADAS
 -----------------------------
 
@@ -187,7 +179,6 @@ parte superior. Este no interfiere con las pruebas pero puede causar scroll
 inesperado en ciertos viewports. Se recomienda usar --window-size=1920,1080.
 
 ==============================================================================
-
 9. POSIBLES MEJORAS FUTURAS
 -----------------------------
 
@@ -224,7 +215,6 @@ Integrar axe-core mediante el plugin de Serenity para validar accesibilidad
 básica (WCAG 2.1 AA) en el flujo de compra.
 
 ==============================================================================
-
 10. CONCLUSIÓN GENERAL
 -----------------------
 
