@@ -350,9 +350,7 @@ BUILD SUCCESS
 * Evidencia automática
 
 ---
-
 # 👨‍💻 Autor
 
 **Kenya Luna**
-
 ```
