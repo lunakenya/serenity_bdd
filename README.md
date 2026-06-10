@@ -1,38 +1,104 @@
-# Demoblaze E2E Automation Framework
+# 🚀 Demoblaze Web Automation Challenge
 
-## Descripción
+Suite de automatización End-to-End para la aplicación web Demoblaze utilizando **Serenity BDD**, **Screenplay Pattern**, **Selenium WebDriver**, **Cucumber** y **JUnit 5**.
 
-Framework de automatización de pruebas funcionales End-to-End (E2E) para la aplicación web **Demoblaze**, desarrollado con:
+El proyecto fue desarrollado siguiendo buenas prácticas de automatización QA enfocadas en:
 
-* Serenity BDD
-* Screenplay Pattern
-* Selenium WebDriver
-* Cucumber (Gherkin)
-* JUnit 5
-* Maven
-* Java 17
-
-El objetivo del proyecto es validar el flujo de compra de productos dentro de la plataforma Demoblaze mediante escenarios automatizados mantenibles, reutilizables y escalables.
+* Mantenibilidad
+* Escalabilidad
+* Reutilización
+* Legibilidad
+* Separación de responsabilidades
+* Evidencia automática
 
 ---
 
-# Arquitectura del Proyecto
+<p align="center">
 
-El proyecto implementa el patrón **Screenplay**, recomendado por Serenity BDD para mejorar la legibilidad, reutilización y mantenimiento de las pruebas automatizadas.
+![Serenity](https://img.shields.io/badge/SerenityBDD-4.2.9-blue?style=for-the-badge)
+
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk)
+
+![Selenium](https://img.shields.io/badge/Selenium-WebDriver-43B02A?style=for-the-badge&logo=selenium)
+
+![Cucumber](https://img.shields.io/badge/Cucumber-7.x-23D96C?style=for-the-badge&logo=cucumber)
+
+![JUnit](https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=junit5)
+
+![Maven](https://img.shields.io/badge/Maven-3.8+-C71A36?style=for-the-badge&logo=apachemaven)
+
+</p>
+
+---
+
+# 📖 Descripción
+
+Esta solución automatiza el flujo completo de compra dentro de la plataforma Demoblaze.
+
+Sitio bajo prueba:
+
+```text
+https://www.demoblaze.com
+````
+
+La automatización cubre escenarios funcionales de usuario final, incluyendo:
+
+* Navegación por catálogo
+* Selección de productos
+* Gestión del carrito
+* Validación de productos agregados
+* Proceso de compra
+* Confirmación de orden
+* Escenarios positivos y negativos
+
+---
+
+# 🎯 Objetivos
+
+✅ Validar el flujo E2E de compra.
+
+✅ Verificar la correcta gestión del carrito.
+
+✅ Confirmar la generación de órdenes.
+
+✅ Validar mensajes de confirmación.
+
+✅ Ejecutar pruebas mediante tags.
+
+✅ Generar reportes automáticos con Serenity.
+
+---
+
+# 🛠 Stack Tecnológico
+
+| Tecnología         | Uso                         |
+| ------------------ | --------------------------- |
+| Java 17            | Lenguaje principal          |
+| Serenity BDD       | Framework de automatización |
+| Selenium WebDriver | Automatización Web          |
+| Cucumber           | BDD                         |
+| JUnit 5            | Ejecución                   |
+| Maven              | Gestión de dependencias     |
+| Chrome             | Navegador                   |
+
+---
+
+# 📂 Estructura del Proyecto
 
 ```text
 src
 └── test
     ├── java
-    │   └── com.demoblaze
-    │       ├── interactions
-    │       ├── models
-    │       ├── questions
-    │       ├── runners
-    │       ├── stepdefinitions
-    │       ├── tasks
-    │       ├── userinterfaces
-    │       └── utils
+    │
+    └── com.demoblaze
+        ├── interactions
+        ├── models
+        ├── questions
+        ├── runners
+        ├── stepdefinitions
+        ├── tasks
+        ├── userinterfaces
+        └── utils
     │
     └── resources
         ├── features
@@ -41,26 +107,57 @@ src
         └── logback-test.xml
 ```
 
-## Descripción de Carpetas
+---
 
-| Carpeta         | Responsabilidad                                  |
-| --------------- | ------------------------------------------------ |
-| interactions    | Acciones simples reutilizables                   |
-| models          | Objetos de datos utilizados por los escenarios   |
-| questions       | Validaciones y consultas realizadas por el actor |
-| runners         | Punto de entrada para la ejecución de pruebas    |
-| stepdefinitions | Implementación de pasos Gherkin                  |
-| tasks           | Flujos de negocio ejecutados por el actor        |
-| userinterfaces  | Localizadores y mapeo de elementos UI            |
-| features        | Escenarios escritos en Gherkin                   |
-| testdata        | Datos de prueba                                  |
-| utils           | Utilidades generales                             |
+# ⚙️ Arquitectura de Automatización
+
+La solución utiliza el patrón Screenplay.
+
+## 🎭 Actors
+
+Representan a los usuarios del sistema.
+
+```text
+Actor
+```
 
 ---
 
-# Requisitos Previos
+## 📝 Tasks
 
-Antes de ejecutar el proyecto, verificar la instalación de:
+Contienen flujos completos de negocio.
+
+```text
+AgregarProducto
+RealizarCompra
+```
+
+---
+
+## 🔍 Questions
+
+Permiten validar resultados esperados.
+
+```text
+MensajeConfirmacion
+ProductosEnCarrito
+```
+
+---
+
+## 🖥 User Interfaces
+
+Centralizan los localizadores.
+
+```text
+HomePage
+CartPage
+PurchaseForm
+```
+
+---
+
+# 📋 Requisitos Previos
 
 ## Java
 
@@ -68,10 +165,10 @@ Antes de ejecutar el proyecto, verificar la instalación de:
 java -version
 ```
 
-Versión requerida:
+Resultado esperado:
 
 ```text
-Java 17
+Java 17+
 ```
 
 ---
@@ -82,57 +179,45 @@ Java 17
 mvn -version
 ```
 
-Versión recomendada:
+Resultado esperado:
 
 ```text
-Maven 3.8+
+Apache Maven 3.8+
 ```
 
 ---
 
-## Google Chrome
+## Chrome
 
-Instalar una versión estable y actualizada de Google Chrome.
-
-Verificar:
-
-```bash
-chrome --version
-```
-
-o
-
-```bash
-google-chrome --version
-```
+Instalar una versión actualizada de Google Chrome.
 
 ---
 
-# Instalación
+# 🚀 Instalación
 
-## 1. Clonar el repositorio
+## Clonar repositorio
 
 ```bash
 git clone https://github.com/lunakenya/serenity_bdd.git
 ```
 
-## 2. Ingresar al proyecto
+Ingresar al proyecto:
 
 ```bash
 cd serenity_bdd-master
 ```
 
-## 3. Descargar dependencias
+Instalar dependencias:
 
 ```bash
-mvn clean install -DskipTests
+mvn clean install
 ```
 
 ---
 
-# Ejecución de Pruebas
+# ▶️ Ejecución
 
-## Ejecutar todos los escenarios
+## Ejecutar toda la suite
 
 ```bash
 mvn clean verify
@@ -140,172 +225,88 @@ mvn clean verify
 
 ---
 
-## Ejecutar con navegador visible
-
-Por defecto el framework corre en modo Headless.
-
-Para visualizar el navegador:
-
-```bash
-mvn clean verify -Dheadless.mode=false
-```
-
----
-
-## Ejecutar por Tags
-
-### Smoke
+## Ejecutar Smoke Tests
 
 ```bash
 mvn clean verify -Dcucumber.filter.tags="@smoke"
 ```
 
-### Regression
+---
+
+## Ejecutar Regresión
 
 ```bash
 mvn clean verify -Dcucumber.filter.tags="@regression"
 ```
 
-### Escenario Crítico
+---
+
+## Ejecutar Casos Críticos
 
 ```bash
 mvn clean verify -Dcucumber.filter.tags="@critical"
 ```
 
-### Negativos
+---
+
+## Ejecutar Escenarios Negativos
 
 ```bash
 mvn clean verify -Dcucumber.filter.tags="@negative"
 ```
 
-### Múltiples Tags
+---
 
-```bash
-mvn clean verify -Dcucumber.filter.tags="@smoke and @critical"
-```
+# 📊 Cobertura de Pruebas
+
+| ID     | Escenario                       |
+| ------ | ------------------------------- |
+| TC-001 | Compra exitosa                  |
+| TC-002 | Agregar producto al carrito     |
+| TC-003 | Agregar múltiples productos     |
+| TC-004 | Compra con datos válidos        |
+| TC-005 | Compra con datos incompletos    |
+| TC-006 | Validación de mensajes de error |
 
 ---
 
-# Escenarios Implementados
+# 🔍 Estrategias Implementadas
 
-## Compra Exitosa
+## Screenplay Pattern
 
-Valida que un usuario pueda:
+Permite:
 
-1. Ingresar a Demoblaze.
-2. Agregar múltiples productos al carrito.
-3. Visualizar el carrito.
-4. Completar el formulario de compra.
-5. Finalizar la compra.
-6. Visualizar el mensaje de confirmación.
-
-Tag:
-
-```gherkin
-@smoke
-@critical
-@e2e
-```
+* Mayor mantenibilidad
+* Menor acoplamiento
+* Reutilización de componentes
 
 ---
 
-## Compra con Formulario Incompleto
+## Evidencias Automáticas
 
-Valida que la aplicación no procese una compra cuando existen campos obligatorios sin completar.
-
-Tag:
-
-```gherkin
-@negative
-@regression
-```
-
----
-
-## Agregar Productos Individualmente
-
-Valida mediante Scenario Outline que distintos productos puedan agregarse correctamente al carrito.
-
-Tag:
-
-```gherkin
-@outline
-@regression
-```
-
----
-
-# Configuración del Proyecto
-
-Archivo:
-
-```text
-src/test/resources/serenity.conf
-```
-
-Configuraciones principales:
-
-## URL Base
-
-```hocon
-webdriver.base.url = "https://www.demoblaze.com"
-```
-
----
-
-## Driver
-
-```hocon
-webdriver.driver = chrome
-```
-
----
-
-## Screenshots
+Configuración:
 
 ```hocon
 take.screenshots = FOR_EACH_ACTION
 ```
 
-Genera evidencia visual de cada acción ejecutada.
+Genera evidencia de cada paso ejecutado.
 
 ---
 
-## Headless
+## Datos Externos
 
-```hocon
-headless.mode = true
-```
-
-Puede sobrescribirse desde Maven:
-
-```bash
--Dheadless.mode=false
-```
-
----
-
-# Datos de Prueba
-
-Ubicación:
+Los datos se encuentran desacoplados de los escenarios.
 
 ```text
-src/test/resources/testdata/
+src/test/resources/testdata
 ```
-
-Archivo:
-
-```text
-purchase-data.properties
-```
-
-Contiene la información utilizada para completar el formulario de compra durante la ejecución de pruebas.
 
 ---
 
-# Reportes
+# 📈 Reportes
 
-Una vez finalizada la ejecución, Serenity genera automáticamente un reporte HTML.
+Serenity genera automáticamente reportes HTML.
 
 Ubicación:
 
@@ -313,114 +314,50 @@ Ubicación:
 target/site/serenity/index.html
 ```
 
-Abrir en navegador:
+---
 
-```bash
-start target/site/serenity/index.html
-```
+# 📷 Información Disponible en Reportes
 
-o
-
-```bash
-open target/site/serenity/index.html
-```
+* Escenarios ejecutados
+* Tiempo de ejecución
+* Evidencias
+* Screenshots
+* Resultado por paso
+* Trazabilidad completa
 
 ---
 
-# Evidencias Generadas
-
-Durante la ejecución se generan:
-
-* Capturas de pantalla.
-* Resultados de escenarios.
-* Trazabilidad de pasos.
-* Historial de ejecución.
-* Evidencias de errores.
-
-Ubicación:
+# 🧪 Resultado Esperado
 
 ```text
-target/site/serenity
+Tests run: X
+Failures: 0
+Errors: 0
+BUILD SUCCESS
 ```
 
 ---
 
-# Solución de Problemas
+# 🧠 Buenas Prácticas Aplicadas
 
-## Error de Dependencias Maven
+* Screenplay Pattern
+* Principio SOLID
+* Page Objects desacoplados
+* Reutilización de Tasks
+* Reutilización de Questions
+* Datos externos
+* Tags para ejecución selectiva
+* Evidencia automática
 
-Ejecutar:
+---
 
-```bash
-mvn clean install -U
+# 👨‍💻 Autor
+
+**Juan Chávez**
+
+Automation QA Engineer
+
 ```
 
----
-
-## Chrome No Compatible
-
-Actualizar navegador:
-
-```text
-Google Chrome
+Este formato es el que normalmente se ve en portafolios QA Senior, desafíos técnicos, repositorios corporativos y postulaciones para Automation Engineer.
 ```
-
-y limpiar dependencias:
-
-```bash
-mvn clean
-```
-
----
-
-## Error de Ejecución Headless
-
-Ejecutar en modo visible:
-
-```bash
-mvn clean verify -Dheadless.mode=false
-```
-
----
-
-## Reporte No Generado
-
-Generar nuevamente:
-
-```bash
-mvn serenity:aggregate
-```
-
----
-
-# Buenas Prácticas Implementadas
-
-* Screenplay Pattern.
-* Separación de responsabilidades.
-* Reutilización de Tasks.
-* Reutilización de Questions.
-* Datos externos al código.
-* Escenarios legibles mediante Gherkin.
-* Evidencias automáticas.
-* Ejecución parametrizable mediante tags.
-* Configuración centralizada.
-
----
-
-# Tecnologías Utilizadas
-
-| Tecnología         | Versión                |
-| ------------------ | ---------------------- |
-| Java               | 17                     |
-| Maven              | 3.8+                   |
-| Serenity BDD       | 4.2.9                  |
-| Cucumber           | 7.15.0                 |
-| JUnit              | 5.10.2                 |
-| Selenium WebDriver | Incluido en Serenity   |
-| Chrome             | Última versión estable |
-
----
-
-# Autor
-
-Luna Kenya
