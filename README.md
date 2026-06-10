@@ -204,7 +204,7 @@ git clone https://github.com/lunakenya/serenity_bdd.git
 Ingresar al proyecto:
 
 ```bash
-cd serenity_bdd-master
+cd serenity_bdd
 ```
 
 Instalar dependencias:
