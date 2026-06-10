@@ -353,11 +353,6 @@ BUILD SUCCESS
 
 # 👨‍💻 Autor
 
-**Juan Chávez**
+**Kenya Luna**
 
-Automation QA Engineer
-
-```
-
-Este formato es el que normalmente se ve en portafolios QA Senior, desafíos técnicos, repositorios corporativos y postulaciones para Automation Engineer.
 ```
